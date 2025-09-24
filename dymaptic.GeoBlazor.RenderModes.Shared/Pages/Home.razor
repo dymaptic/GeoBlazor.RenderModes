@@ -1,0 +1,83 @@
+﻿@page "/"
+
+<PageTitle>BlazorDay - Render Modes Demo</PageTitle>
+
+<div class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1 class="hero-title">
+                <span class="blazor-gradient">Blazor</span>Day Render Modes
+            </h1>
+            <p class="hero-subtitle">
+                Explore the power of different Blazor render modes with interactive GeoBlazor maps
+            </p>
+            <p class="hero-description">
+                This sample application demonstrates how Blazor's render modes (Static, Server, WebAssembly, and Auto) 
+                work with rich mapping components. Experience the flexibility of modern web development!
+            </p>
+            <div class="hero-buttons">
+                <a href="https://blazorday.net/" target="_blank" class="btn btn-primary btn-lg">
+                    Visit BlazorDay.net
+                    <span class="external-link-icon">↗</span>
+                </a>
+                <a href="/auto" class="btn btn-secondary btn-lg">
+                    Try Interactive Demo
+                </a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="_content/dymaptic.GeoBlazor.RenderModes.Shared/blazor_day_mascot.webp" alt="BlazorDay Mascot" class="mascot-image" />
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2 class="section-title">Discover Blazor Render Modes</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🖥️</div>
+                <h3>Interactive Server</h3>
+                <p>Real-time updates with server-side processing. Perfect for rich interactions without client-side complexity.</p>
+                <a href="/server" class="feature-link">Try Server Mode →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>WebAssembly</h3>
+                <p>Client-side execution with full .NET runtime in the browser. Experience offline-capable web apps.</p>
+                <a href="/wasm" class="feature-link">Try WebAssembly →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Interactive Auto</h3>
+                <p>Best of both worlds - automatically switches between Server and WebAssembly for optimal performance.</p>
+                <a href="/auto" class="feature-link">Try Auto Mode →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="about-section">
+    <div class="container">
+        <div class="about-content">
+            <h2>About This Demo</h2>
+            <p>
+                This application showcases the integration of <strong>GeoBlazor</strong> mapping components 
+                with different Blazor render modes. Each page demonstrates unique capabilities:
+            </p>
+            <ul class="feature-list">
+                <li>Interactive maps with real-time weather data</li>
+                <li>Bookmarking and spatial analysis tools</li>
+                <li>Click-to-add functionality with 3D scenes</li>
+                <li>Layer management and visualization controls</li>
+            </ul>
+            <div class="tech-stack">
+                <a class="tech-badge" target="_blank" href="https://dotnet.microsoft.com">.NET 9</a>
+                <a class="tech-badge" target="_blank" href="https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor">Blazor</a>
+                <a class="tech-badge" target="_blank" href="https://geoblazor.com">GeoBlazor</a>
+                <a class="tech-badge" target="_blank" href="https://www.arcgis.com/index.html">ArcGIS</a>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Main circular path -->
+    <path d="M90 30 A60 60 0 1 1 89 30" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"/>
+    
+    <!-- Top arrowhead - made bigger -->
+    <path d="M80 20 L100 40 L80 50" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Bottom arrowhead pointing opposite direction - made bigger -->
+    <path d="M100 160 L80 140 L100 130" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

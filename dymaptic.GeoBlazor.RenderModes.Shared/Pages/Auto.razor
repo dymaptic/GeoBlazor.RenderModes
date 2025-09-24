@@ -1,0 +1,176 @@
+﻿@page "/auto"
+@rendermode InteractiveAuto
+
+<PageTitle>Interactive Auto</PageTitle>
+
+<h1>Current Render Mode: @RendererInfo.Name</h1>
+
+<h2>Weather</h2>
+
+<p>This component demonstrates showing data and layering different feature sets on the map.</p>
+
+@if (!_forecasts.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in _forecasts)
+            {
+                <tr @onclick="@(() => SetFilterToDate(forecast.Date))" style="cursor: pointer;">
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.Region</td>
+                    <td>@forecast.Temperature</td>
+                    <td>@forecast.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<MapView Style="height:500px; width:100%;" OnLayerViewCreate="OnLayerViewCreate">
+    <Extent Xmin="-130" Xmax="-65" Ymin="24" Ymax="50">
+        <SpatialReference Wkid="4326" />
+    </Extent>
+    <Map>
+        <Basemap>
+            <BasemapStyle Name="BasemapStyleName.ArcgisImagery" />
+        </Basemap>
+        <FeatureLayer Title="State Boundaries" 
+                      Url="https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_States_Generalized_Boundaries/FeatureServer"
+                      ListMode="@ListMode.Hide" />
+        <FeatureLayer @ref="_precipitationLayer" 
+                      Title="Precipitation" 
+                      Url="https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NDFD_Precipitation_v1/FeatureServer/0" />
+        <FeatureLayer @ref="_temperatureLayer" 
+                      Title="Temperature" 
+                      Visible="false"
+                      Url="https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NDFD_DailyTemperature_v1/FeatureServer/1" />
+        <FeatureLayer @ref="_windSpeedLayer" 
+                      Title="Wind Speed"
+                      Visible="false"
+                      Url="https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/NDFD_WindSpeed_v1/FeatureServer/0" />
+    </Map>
+    <LayerListWidget Position="OverlayPosition.TopRight" />
+</MapView>
+
+@code {
+
+    protected async Task OnLayerViewCreate(LayerViewCreateEvent createEvent)
+    {
+        if (createEvent.LayerView is FeatureLayerView featureLayerView && createEvent.Layer?.Title != "State Boundaries")
+        {
+            await featureLayerView.SetFilter(GetDayFilter(DateTime.UtcNow));
+        }
+        
+        if (_temperatureLayer?.LayerView is not null 
+            && _precipitationLayer?.LayerView is not null 
+            && _windSpeedLayer?.LayerView is not null)
+        {
+            // All layers are loaded, we can load the weather data
+            await LoadWeatherData();
+        }
+    }
+    
+    private async Task LoadWeatherData()
+    {
+        try
+        {
+            Query query = new()
+            {
+                TimeExtent = new TimeExtent(DateTime.Today, DateTime.Today.AddDays(3)),
+                Where = "1=1",
+                OutFields = ["*"],
+                ReturnGeometry = false
+            };
+            var result = await _temperatureLayer!.QueryFeatures(query);
+            _forecasts = result!.Features!.Select(f =>
+            {
+                string? dateString = f.Attributes["Period"]?.ToString();
+                string regionString = f.Attributes["Region"]?.ToString() ?? "N/A";
+                int regionInt = int.TryParse(regionString, out var r) ? r : 0;
+                string region = _regions.GetValueOrDefault(regionInt, "N/A");
+                string tempString = f.Attributes["Temp"]?.ToString() ?? "0";
+                int tempKey = _temperatureSummaries
+                    .Keys
+                    .Order()
+                    .FirstOrDefault(k => k >= int.Parse(tempString));
+                string description = _temperatureSummaries.GetValueOrDefault(tempKey, "N/A");
+                return new WeatherForecast
+                {
+                    Date = DateTime.TryParse(dateString, out var date) ? date : DateTime.MinValue,
+                    Region = region,
+                    Temperature = int.TryParse(tempString, out var temp) ? temp : 0,
+                    Description = description
+                };
+            })
+            .DistinctBy(wf =>new { wf.Region, wf.Date }) // Remove duplicates based on Region and Date
+            .OrderBy(wf => wf.Date)
+            .ThenBy(wf => wf.Region)
+            .ToList();
+        }
+        catch (Exception ex)
+        {
+            await Console.Error.WriteLineAsync($"Error loading weather data: {ex.Message}");
+        }
+    }
+    
+    private async Task SetFilterToDate(DateTime date)
+    {
+        if (_temperatureLayer?.LayerView is not null 
+            && _precipitationLayer?.LayerView is not null 
+            && _windSpeedLayer?.LayerView is not null)
+        {
+            DateTime dateTime = date.Date;
+            await ((FeatureLayerView)_temperatureLayer.LayerView).SetFilter(GetDayFilter(dateTime));
+            await ((FeatureLayerView)_precipitationLayer.LayerView).SetFilter(GetDayFilter(dateTime));
+            await ((FeatureLayerView)_windSpeedLayer.LayerView).SetFilter(GetDayFilter(dateTime));
+        }
+    }
+
+    private FeatureLayer? _temperatureLayer;
+    private FeatureLayer? _precipitationLayer;
+    private FeatureLayer? _windSpeedLayer;
+    private FeatureFilter GetDayFilter(DateTime date) => new(timeExtent: new TimeExtent(date, date.AddDays(1)));
+    private List<WeatherForecast> _forecasts = [];
+    private readonly Dictionary<int, string> _temperatureSummaries = new()
+    {
+        { 32, "Freezing" },
+        { 38, "Bracing" },
+        { 45, "Chilly" },
+        { 55, "Cool" },
+        { 65, "Mild" },
+        { 75, "Warm" },
+        { 85, "Balmy" },
+        { 90, "Hot" },
+        { 95, "Sweltering" },
+        { 130, "Scorching" }
+    };
+
+    private readonly Dictionary<int, string> _regions = new()
+    {
+        { 1, "Continental US" },
+        { 2, "Alaska" },
+        { 3, "Guam" },
+        { 4, "Hawaii" },
+        { 5, "Puerto Rico" }
+    };
+
+    private class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+        public int Temperature { get; set; }
+        public string Region { get; set; } = "N/A";
+        public string Description { get; set; } = "N/A";
+    }
+}
