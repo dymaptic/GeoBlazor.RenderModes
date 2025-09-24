@@ -5,11 +5,13 @@
 
 <h1>Current Render Mode: @RendererInfo.Name</h1>
 
-<h2>Counter</h2>
+<div class="features-section">
+    <h2>Counter</h2>
 
-<p>
-    Click on the map to increment the counter and add markers. Use the Search widget to find locations.
-</p>
+    <p>
+        Click on the map to increment the counter and add markers. Use the Search widget to find locations.
+    </p>
+</div>
 
 <SceneView @ref="_sceneView" 
            Style="height:500px; width:100%;" 
@@ -24,7 +26,7 @@
     <SearchWidget Position="OverlayPosition.TopRight" />
 </SceneView>
 
-<div>
+<div class="features-section">
     <h2>Points Clicked</h2>
     <h3 role="status">Current count: @_points.Count</h3>
     @foreach (Point point in _points)

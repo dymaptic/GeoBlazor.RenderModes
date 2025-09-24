@@ -6,6 +6,10 @@ html, body {
     min-height: 100vh;
 }
 
+h1 {
+    color: white;
+}
+
 /* Hero Section */
 .hero-section {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -33,7 +37,7 @@ html, body {
 }
 
 .blazor-gradient {
-    background: linear-gradient(45deg, #512bd4, #7c3aed, #a855f7);
+    background: linear-gradient(45deg, #512bd4, #7c3aed, #3f2a53);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -78,7 +82,7 @@ html, body {
 /* Features Section */
 .features-section {
     background: white;
-    padding: 4rem 2rem;
+    padding: 2rem;
 }
 
 .container {
@@ -283,6 +287,22 @@ a, .btn-link {
 .navbar-brand {
     font-weight: 700;
     font-size: 1.2rem;
+    background-color: white;
+    color: #667eea;
+    padding: 0.5rem;
+}
+
+.navbar-brand:hover {
+    text-decoration: none;
+    color: #5a67d8;
+}
+
+.navbar-dark .navbar-brand {
+    color: #667eea;
+}
+
+.navbar-dark .navbar-brand:hover {
+    color: #5a67d8;
 }
 
 .nav-link {

@@ -5,38 +5,40 @@
 
 <h1>Current Render Mode: @RendererInfo.Name</h1>
 
-<h2>Weather</h2>
+<div class="features-section">
+    <h2>Weather</h2>
 
-<p>This component demonstrates showing data and layering different feature sets on the map.</p>
+    <p>This component demonstrates showing data and layering different feature sets on the map.</p>
 
-@if (!_forecasts.Any())
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in _forecasts)
-            {
-                <tr @onclick="@(() => SetFilterToDate(forecast.Date))" style="cursor: pointer;">
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.Region</td>
-                    <td>@forecast.Temperature</td>
-                    <td>@forecast.Description</td>
+    @if (!_forecasts.Any())
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Location</th>
+                    <th>Temp. (F)</th>
+                    <th>Summary</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var forecast in _forecasts)
+                {
+                    <tr @onclick="@(() => SetFilterToDate(forecast.Date))" style="cursor: pointer;">
+                        <td>@forecast.Date.ToShortDateString()</td>
+                        <td>@forecast.Region</td>
+                        <td>@forecast.Temperature</td>
+                        <td>@forecast.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 <MapView Style="height:500px; width:100%;" OnLayerViewCreate="OnLayerViewCreate">
     <Extent Xmin="-130" Xmax="-65" Ymin="24" Ymax="50">
